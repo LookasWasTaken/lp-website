@@ -33,21 +33,25 @@ function About() {
         <div className="grid md:grid-cols-2 gap-16">
           <div>
             <p className="text-gray-500 leading-relaxed mb-4">
-              Placeholder — Ciao! Sono Luca, web developer con base a Roma. Ho
-              un percorso un po' atipico: vengo dal mondo delle scienze motorie,
-              ma la passione per il digitale mi ha portato a reinventarmi
-              completamente.
+              Sono Luca, web developer basato a Roma. Lavoro come freelance e in
+              collaborazione con studi e agenzie, costruendo siti e interfacce
+              che funzionano bene e si vedono meglio. Mi interessa ugualmente la
+              parte visiva e quella logica del codice — per me un buon sito è
+              quello dove le due cose non si distinguono.
             </p>
             <p className="text-gray-500 leading-relaxed mb-4">
-              Placeholder — Lavoro principalmente con WordPress per i clienti,
-              ma sto espandendo le mie competenze verso il frontend moderno con
-              React. Mi piace costruire interfacce pulite, veloci e curate nei
-              dettagli.
+              Ho una laurea in Scienze Motorie, e no, non è un errore. Quello
+              che ho imparato lavorando con le persone — disciplina, ascolto,
+              gestione della pressione — lo uso ogni giorno anche nello sviluppo
+              web. Ho iniziato ad avvicinarmi al codice per curiosità, poi è
+              diventato un lavoro, poi una passione vera.
             </p>
             <p className="text-gray-500 leading-relaxed">
-              Placeholder — Quando non scrivo codice, mi trovi in palestra o a
-              studiare qualcosa di nuovo. Sono disponibile per progetti
-              freelance e collaborazioni.
+              Oggi lavoro principalmente con WordPress per i clienti, e sto
+              espandendo il mio stack verso il frontend moderno con React. Curo
+              i dettagli, rispetto le scadenze e preferisco fare poche cose bene
+              piuttosto che tante cose così così. Se hai un progetto in mente,
+              sono disponibile a sentire.
             </p>
           </div>
 
