@@ -7,7 +7,7 @@ function Hero() {
           disponibile per nuovi progetti
         </span>
 
-        <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight tracking-tight mb-6">
+        <h1 className="font-grotesk text-5xl md:text-7xl font-bold text-white leading-tight tracking-tight mb-6">
           Ciao, sono
           <br />
           <span className="text-violet-400">Luca.</span>

@@ -1,7 +1,15 @@
 import { useState } from "react";
+// eslint-disable-next-line no-unused-vars
+import { motion, useMotionValueEvent, useScroll } from "motion/react";
 
 function Navbar() {
   const [menuAperto, setMenuAperto] = useState(false);
+  const [visibile, setVisibile] = useState(false);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setVisibile(latest > window.innerHeight * 1.4);
+  });
 
   const links = [
     { label: "About", href: "#about" },
@@ -11,7 +19,12 @@ function Navbar() {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100">
+    <motion.nav
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: visibile ? 0 : -100, opacity: visibile ? 1 : 0 }}
+      transition={{ duration: 0.4, ease: "easeInOut" }}
+      className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100"
+    >
       <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
         <a href="#" className="text-lg font-bold text-gray-900 tracking-tight">
           luca<span className="text-violet-600">.</span>dev
@@ -82,7 +95,7 @@ function Navbar() {
           </ul>
         </div>
       )}
-    </nav>
+    </motion.nav>
   );
 }
 

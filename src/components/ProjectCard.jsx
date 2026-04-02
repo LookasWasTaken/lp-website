@@ -8,6 +8,7 @@ function ProjectCard({ project }) {
       whileHover="tilt"
       initial="rest"
       animate="rest"
+      className="shrink-0 w-64 cursor-pointer"
     >
       <motion.div
         variants={{
@@ -16,73 +17,86 @@ function ProjectCard({ project }) {
             transition: { duration: 0.4, ease: "easeOut" },
           },
           tilt: {
-            rotateX: 30,
+            rotateX: 20,
             transition: { duration: 0.4, ease: "easeOut" },
           },
         }}
-        style={{ transformStyle: "preserve-3d", position: "relative" }}
-        className="bg-gray-900 border border-gray-800 rounded-xl p-6 flex flex-col gap-4 cursor-pointer"
+        style={{
+          transformStyle: "preserve-3d",
+          position: "relative",
+          background: project.coloreBackground,
+        }}
+        className="rounded-2xl overflow-visible h-80 flex flex-col"
       >
-        <div className="flex items-start justify-between gap-4">
-          <h3 className="text-white font-medium">{project.nome}</h3>
+        {/* Overlay scuro in alto al tilt */}
+        <motion.div
+          variants={{
+            rest: { opacity: 0 },
+            tilt: { opacity: 1 },
+          }}
+          transition={{ duration: 0.3 }}
+          className="absolute inset-x-0 top-0 h-1/2 rounded-t-2xl z-10"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(0,0,0,0.6), transparent)",
+          }}
+        />
 
-          <a
-            href={project.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gray-600 hover:text-violet-400 transition-colors shrink-0"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+        {/* Logo / placeholder */}
+        <div className="flex-1 flex items-center justify-center p-6 z-20">
+          {project.logo ? (
+            <img
+              src={project.logo}
+              alt={project.nome}
+              className="max-h-16 max-w-full object-contain"
+            />
+          ) : (
+            <span
+              className="font-gothic text-4xl uppercase tracking-tight"
+              style={{ color: project.coloreTesto }}
             >
-              <line x1="3" y1="13" x2="13" y2="3" />
-              <polyline points="7,3 13,3 13,9" />
-            </svg>
-          </a>
+              {project.nome}
+            </span>
+          )}
         </div>
 
-        <p className="text-sm text-gray-400 leading-relaxed">
-          {project.descrizione}
-        </p>
-
-        <div className="flex flex-wrap gap-2 mt-auto">
+        {/* Footer con tag */}
+        <div className="px-4 pb-4 z-20 flex flex-wrap gap-2">
           {project.tags.map((tag) => (
             <span
               key={tag}
-              className="text-xs text-violet-400 bg-violet-950 border border-violet-900 rounded-full px-3 py-1"
+              className="text-xs px-2 py-1 rounded-full"
+              style={{
+                background: "rgba(255,255,255,0.1)",
+                color: project.coloreTesto,
+              }}
             >
               {tag}
             </span>
           ))}
         </div>
 
+        {/* PNG che emerge al tilt */}
         {project.immagineTilt && (
           <motion.div
             variants={{
               rest: { opacity: 0, y: 10 },
-              tilt: { opacity: 1, y: -16 },
+              tilt: { opacity: 1, y: -24 },
             }}
             transition={{ duration: 0.3 }}
             style={{
               position: "absolute",
-              bottom: "-24px",
-              right: "24px",
+              bottom: "-16px",
+              right: "16px",
               transformStyle: "preserve-3d",
               transform: "translateZ(40px)",
+              zIndex: 30,
             }}
           >
             <img
               src={project.immagineTilt}
               alt={project.nome}
-              className="h-24 w-auto object-contain drop-shadow-2xl"
+              className="h-28 w-auto object-contain drop-shadow-2xl"
             />
           </motion.div>
         )}
