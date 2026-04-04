@@ -1,107 +1,171 @@
 // eslint-disable-next-line no-unused-vars
 import { motion } from "motion/react";
+import { useState } from "react";
+import {
+  FaCss3Alt,
+  FaGitAlt,
+  FaHtml5,
+  FaJs,
+  FaPhp,
+  FaReact,
+  FaWordpress,
+} from "react-icons/fa";
+import {
+  SiDavinciresolve,
+  SiTailwindcss,
+  SiVite,
+  SiWoocommerce,
+} from "react-icons/si";
+
+const iconMap = {
+  WordPress: { icon: <FaWordpress />, color: "#21759b" },
+  WooCommerce: { icon: <SiWoocommerce />, color: "#96588a" },
+  PHP: { icon: <FaPhp />, color: "#777bb4" },
+  JavaScript: { icon: <FaJs />, color: "#f7df1e" },
+  HTML: { icon: <FaHtml5 />, color: "#e34f26" },
+  CSS: { icon: <FaCss3Alt />, color: "#1572b6" },
+  React: { icon: <FaReact />, color: "#61dafb" },
+  Tailwind: { icon: <SiTailwindcss />, color: "#38bdf8" },
+  Vite: { icon: <SiVite />, color: "#646cff" },
+  Git: { icon: <FaGitAlt />, color: "#f05032" },
+  "DaVinci Resolve": { icon: <SiDavinciresolve />, color: "#233a54" },
+};
+
+const fontMap = {
+  "font-gothic": "'League Gothic', sans-serif",
+  "font-syne": "'Syne', sans-serif",
+  "font-grotesk": "'Space Grotesk', sans-serif",
+  "font-jakarta": "'Plus Jakarta Sans', sans-serif",
+  "font-dm": "'DM Sans', sans-serif",
+  "font-serif": "'DM Serif Display', serif",
+};
+
+function TagIcon({ tag }) {
+  const entry = iconMap[tag];
+  if (entry) {
+    return (
+      <span
+        className="text-2xl transition-opacity"
+        style={{ color: entry.color, lineHeight: 1 }}
+        title={tag}
+      >
+        {entry.icon}
+      </span>
+    );
+  }
+  return (
+    <span className="text-white/50 text-xs font-medium" title={tag}>
+      {tag}
+    </span>
+  );
+}
 
 function ProjectCard({ project }) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleClick = () => {
+    if (project.link)
+      window.open(project.link, "_blank", "noopener noreferrer");
+  };
+
   return (
-    <motion.div
+    <div
       style={{ perspective: "1000px" }}
-      whileHover="tilt"
-      initial="rest"
-      animate="rest"
-      className="shrink-0 w-64 cursor-pointer"
+      className="shrink-0 w-80 cursor-pointer relative"
+      onClick={handleClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <motion.div
+        animate={isHovered ? "tilt" : "rest"}
         variants={{
-          rest: {
-            rotateX: 0,
-            transition: { duration: 0.4, ease: "easeOut" },
-          },
-          tilt: {
-            rotateX: 20,
-            transition: { duration: 0.4, ease: "easeOut" },
-          },
+          rest: { rotateX: 0, transition: { duration: 0.4, ease: "easeOut" } },
+          tilt: { rotateX: 25, transition: { duration: 0.4, ease: "easeOut" } },
         }}
         style={{
           transformStyle: "preserve-3d",
-          position: "relative",
           background: project.coloreBackground,
         }}
-        className="rounded-2xl overflow-visible h-80 flex flex-col"
+        className="rounded-2xl h-96 flex flex-col overflow-visible relative"
       >
         {/* Overlay scuro in alto al tilt */}
         <motion.div
-          variants={{
-            rest: { opacity: 0 },
-            tilt: { opacity: 1 },
-          }}
+          animate={isHovered ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="absolute inset-x-0 top-0 h-1/2 rounded-t-2xl z-10"
+          className="absolute inset-x-0 top-0 h-2/3 rounded-t-2xl z-10 pointer-events-none"
           style={{
             background:
-              "linear-gradient(to bottom, rgba(0,0,0,0.6), transparent)",
+              "linear-gradient(to bottom, rgba(0,0,0,0.7), transparent)",
           }}
         />
 
-        {/* Logo / placeholder */}
-        <div className="flex-1 flex items-center justify-center p-6 z-20">
+        {/* Area principale */}
+        <div className="flex-1 flex items-center justify-center p-6 z-20 relative">
+          <motion.div
+            animate={isHovered ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="absolute inset-0 z-10 rounded-t-2xl pointer-events-none"
+            style={{ background: "rgba(0,0,0,0.5)" }}
+          />
           {project.logo ? (
             <img
               src={project.logo}
               alt={project.nome}
-              className="max-h-16 max-w-full object-contain"
+              className="max-h-20 max-w-full object-contain relative z-0"
             />
           ) : (
             <span
-              className="font-gothic text-4xl uppercase tracking-tight"
-              style={{ color: project.coloreTesto }}
+              className="text-5xl tracking-tight text-center relative z-0"
+              style={{
+                color: project.coloreTesto,
+                fontFamily:
+                  fontMap[project.fontFamily] || "'League Gothic', sans-serif",
+              }}
             >
               {project.nome}
             </span>
           )}
         </div>
 
-        {/* Footer con tag */}
-        <div className="px-4 pb-4 z-20 flex flex-wrap gap-2">
+        {/* Footer glassmorphism */}
+        <div
+          className="px-4 py-3 z-20 flex items-center justify-center flex-wrap gap-3 rounded-b-2xl"
+          style={{
+            background: "rgba(255,255,255,0.05)",
+            backdropFilter: "blur(8px)",
+            borderTop: "0.5px solid rgba(255,255,255,0.08)",
+          }}
+        >
           {project.tags.map((tag) => (
-            <span
-              key={tag}
-              className="text-xs px-2 py-1 rounded-full"
-              style={{
-                background: "rgba(255,255,255,0.1)",
-                color: project.coloreTesto,
-              }}
-            >
-              {tag}
-            </span>
+            <TagIcon key={tag} tag={tag} />
           ))}
         </div>
-
-        {/* PNG che emerge al tilt */}
-        {project.immagineTilt && (
-          <motion.div
-            variants={{
-              rest: { opacity: 0, y: 10 },
-              tilt: { opacity: 1, y: -24 },
-            }}
-            transition={{ duration: 0.3 }}
-            style={{
-              position: "absolute",
-              bottom: "-16px",
-              right: "16px",
-              transformStyle: "preserve-3d",
-              transform: "translateZ(40px)",
-              zIndex: 30,
-            }}
-          >
-            <img
-              src={project.immagineTilt}
-              alt={project.nome}
-              className="h-28 w-auto object-contain drop-shadow-2xl"
-            />
-          </motion.div>
-        )}
       </motion.div>
-    </motion.div>
+
+      {/* PNG fuori dal contesto 3D */}
+      {project.immagineTilt && (
+        <motion.div
+          animate={isHovered ? { opacity: 1, y: -120 } : { opacity: 0, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          style={{
+            position: "absolute",
+            bottom: "0px",
+            left: "0",
+            right: "0",
+            display: "flex",
+            justifyContent: "center",
+            zIndex: 50,
+            pointerEvents: "none",
+          }}
+        >
+          <img
+            src={project.immagineTilt}
+            alt={project.nome}
+            className="max-h-72 max-w-[90%] object-contain drop-shadow-2xl"
+          />
+        </motion.div>
+      )}
+    </div>
   );
 }
 
