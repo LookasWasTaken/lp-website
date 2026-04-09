@@ -1,16 +1,24 @@
+const logos = import.meta.glob("../assets/brands/*", { eager: true });
+const tilts = import.meta.glob("../assets/products/*", { eager: true });
+
+const logo = (filename) =>
+  logos[`../assets/brands/${filename}`]?.default ?? null;
+
+const tilt = (filename) =>
+  tilts[`../assets/products/${filename}`]?.default ?? null;
+
 const projects = [
   {
     id: 1,
     nome: "Bionuvya",
     descrizione: "E-commerce skincare",
-    coloreBackground: "#0f172a",
-    coloreTesto: "#e8e8f0",
+    coloreBackground: "#006072",
+    coloreTesto: "#ffffff",
     fontFamily: "font-gothic",
-    logo: null,
-    immagineTilt:
-      "https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=300&q=80",
-    tags: ["WordPress", "WooCommerce", "JavaScript", "CSS", "PHP", "HTML"],
-    link: "https://bionuvya.it",
+    logo: logo("bionuvya.png"),
+    immagineTilt: tilt("prodotti_bionuvya.png"),
+    tags: ["WordPress", "WooCommerce", "PHP", "JavaScript", "CSS"],
+    link: "https://bionuvya.it/",
   },
   {
     id: 2,
@@ -76,6 +84,18 @@ const projects = [
       "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=300&q=80",
     tags: ["WordPress", "WooCommerce", "CSS"],
     link: "https://esempio.com",
+  },
+  {
+    id: 7,
+    nome: "Ottica Ritz",
+    descrizione: "Centro ottico",
+    coloreBackground: "#6B1010",
+    coloreTesto: "#ffffff",
+    fontFamily: "font-gothic",
+    logo: logo("ottica_ritz.png"),
+    immagineTilt: tilt("occhiali_ottica_ritz.png"),
+    tags: ["Shopify", "JavaScript", "CSS"],
+    link: "https://otticaritz.it/",
   },
 ];
 

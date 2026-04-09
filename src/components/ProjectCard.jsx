@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import {
   SiDavinciresolve,
+  SiShopify,
   SiTailwindcss,
   SiVite,
   SiWoocommerce,
@@ -29,6 +30,7 @@ const iconMap = {
   Vite: { icon: <SiVite />, color: "#646cff" },
   Git: { icon: <FaGitAlt />, color: "#f05032" },
   "DaVinci Resolve": { icon: <SiDavinciresolve />, color: "#233a54" },
+  Shopify: { icon: <SiShopify />, color: "#96bf48" },
 };
 
 const fontMap = {
@@ -40,13 +42,13 @@ const fontMap = {
   "font-serif": "'DM Serif Display', serif",
 };
 
-function TagIcon({ tag }) {
+function TagIcon({ tag, iconSize }) {
   const entry = iconMap[tag];
   if (entry) {
     return (
       <span
-        className="text-2xl transition-opacity"
-        style={{ color: entry.color, lineHeight: 1 }}
+        className="transition-all duration-300"
+        style={{ color: entry.color, lineHeight: 1, fontSize: iconSize }}
         title={tag}
       >
         {entry.icon}
@@ -54,30 +56,55 @@ function TagIcon({ tag }) {
     );
   }
   return (
-    <span className="text-white/50 text-xs font-medium" title={tag}>
+    <span
+      className="text-white/50 font-medium transition-all duration-300"
+      style={{ fontSize: `calc(${iconSize} * 0.5)` }}
+      title={tag}
+    >
       {tag}
     </span>
   );
 }
 
-function ProjectCard({ project }) {
-  const [isHovered, setIsHovered] = useState(false);
+/**
+ * touchState: null (desktop) | "idle" | "active" | "revealed"
+ *
+ * null     → desktop, onClick gestito internamente, hover via mouse
+ * "idle"   → touch, card non centrata, nessun effetto
+ * "active" → touch, card centrata, primo tap non ancora avvenuto
+ * "revealed" → touch, card centrata, primo tap fatto → PNG visibile,
+ *              secondo tap gestito dal parent (apre link)
+ */
+function ProjectCard({ project, cardSize, touchState }) {
+  const [mouseHovered, setMouseHovered] = useState(false);
+
+  const isDesktop = touchState === null;
+
+  // Su desktop: hover via mouse. Su touch: "revealed" mostra la PNG
+  const isActive = isDesktop ? mouseHovered : touchState === "revealed";
+
+  const { width, height, logoMaxH, pngMaxH, iconSize, pngOffsetY, titleSize } =
+    cardSize;
 
   const handleClick = () => {
+    // Il click su desktop apre il link direttamente.
+    // Su touch il click è gestito dal parent (TouchCarousel),
+    // qui non facciamo nulla per evitare doppi handler.
+    if (!isDesktop) return;
     if (project.link)
       window.open(project.link, "_blank", "noopener noreferrer");
   };
 
   return (
     <div
-      style={{ perspective: "1000px" }}
-      className="shrink-0 w-80 cursor-pointer relative"
+      style={{ perspective: "1000px", width, flexShrink: 0 }}
+      className="cursor-pointer relative"
       onClick={handleClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => isDesktop && setMouseHovered(true)}
+      onMouseLeave={() => isDesktop && setMouseHovered(false)}
     >
       <motion.div
-        animate={isHovered ? "tilt" : "rest"}
+        animate={isActive ? "tilt" : "rest"}
         variants={{
           rest: { rotateX: 0, transition: { duration: 0.4, ease: "easeOut" } },
           tilt: { rotateX: 25, transition: { duration: 0.4, ease: "easeOut" } },
@@ -85,12 +112,13 @@ function ProjectCard({ project }) {
         style={{
           transformStyle: "preserve-3d",
           background: project.coloreBackground,
+          height,
         }}
-        className="rounded-2xl h-96 flex flex-col overflow-visible relative"
+        className="rounded-2xl flex flex-col overflow-visible relative"
       >
         {/* Overlay scuro in alto al tilt */}
         <motion.div
-          animate={isHovered ? { opacity: 1 } : { opacity: 0 }}
+          animate={isActive ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.3 }}
           className="absolute inset-x-0 top-0 h-2/3 rounded-t-2xl z-10 pointer-events-none"
           style={{
@@ -102,7 +130,7 @@ function ProjectCard({ project }) {
         {/* Area principale */}
         <div className="flex-1 flex items-center justify-center p-6 z-20 relative">
           <motion.div
-            animate={isHovered ? { opacity: 1 } : { opacity: 0 }}
+            animate={isActive ? { opacity: 1 } : { opacity: 0 }}
             transition={{ duration: 0.3 }}
             className="absolute inset-0 z-10 rounded-t-2xl pointer-events-none"
             style={{ background: "rgba(0,0,0,0.5)" }}
@@ -111,15 +139,17 @@ function ProjectCard({ project }) {
             <img
               src={project.logo}
               alt={project.nome}
-              className="max-h-20 max-w-full object-contain relative z-0"
+              className="max-w-full object-contain relative z-0 transition-all duration-300"
+              style={{ maxHeight: logoMaxH }}
             />
           ) : (
             <span
-              className="text-5xl tracking-tight text-center relative z-0"
+              className="tracking-tight text-center relative z-0 transition-all duration-300"
               style={{
                 color: project.coloreTesto,
                 fontFamily:
                   fontMap[project.fontFamily] || "'League Gothic', sans-serif",
+                fontSize: titleSize,
               }}
             >
               {project.nome}
@@ -129,15 +159,16 @@ function ProjectCard({ project }) {
 
         {/* Footer glassmorphism */}
         <div
-          className="px-4 py-3 z-20 flex items-center justify-center flex-wrap gap-3 rounded-b-2xl"
+          className="px-4 py-3 z-20 flex items-center justify-center flex-wrap rounded-b-2xl transition-all duration-300"
           style={{
             background: "rgba(255,255,255,0.05)",
             backdropFilter: "blur(8px)",
             borderTop: "0.5px solid rgba(255,255,255,0.08)",
+            gap: `calc(${iconSize} * 0.5)`,
           }}
         >
           {project.tags.map((tag) => (
-            <TagIcon key={tag} tag={tag} />
+            <TagIcon key={tag} tag={tag} iconSize={iconSize} />
           ))}
         </div>
       </motion.div>
@@ -145,7 +176,9 @@ function ProjectCard({ project }) {
       {/* PNG fuori dal contesto 3D */}
       {project.immagineTilt && (
         <motion.div
-          animate={isHovered ? { opacity: 1, y: -120 } : { opacity: 0, y: 0 }}
+          animate={
+            isActive ? { opacity: 1, y: pngOffsetY } : { opacity: 0, y: 0 }
+          }
           transition={{ duration: 0.4, ease: "easeOut" }}
           style={{
             position: "absolute",
@@ -161,7 +194,8 @@ function ProjectCard({ project }) {
           <img
             src={project.immagineTilt}
             alt={project.nome}
-            className="max-h-72 max-w-[90%] object-contain drop-shadow-2xl"
+            className="max-w-[90%] object-contain drop-shadow-2xl transition-all duration-300"
+            style={{ maxHeight: pngMaxH }}
           />
         </motion.div>
       )}
